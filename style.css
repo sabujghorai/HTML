@@ -13,7 +13,7 @@ body{
 }
 
 .Calculator{
-    border: 1px solid #713377;
+    border: 1px solid #c3f304;
     padding: 20px  ;
     border-radius: 16px;
     background-color: transparent;
@@ -49,5 +49,5 @@ button{
     background-color: rgb(255, 68, 0);
 }
 .operator{
-    color: rgb(152, 250, 4);
+    color: rgb(96, 244, 4);
 }
