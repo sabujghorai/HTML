@@ -4,15 +4,15 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(45deg, #2d2b7b, #4287e7);
+    background: linear-gradient(45deg, #09a8ec, #e581ec);
 }
 
 .calculator{
-    border: 1px solid #3c3f04;
+    border: 1px solid #0bf15f;
     padding: 20px;
     border-radius: 16px;
     background-color: transparent;
-    box-shadow: 0px 3px 15px rgba(6, 85, 242, 0.5);
+    box-shadow: 0px 3px 15px rgba(36, 150, 181, 0.5);
 }
 
 input{
@@ -21,7 +21,7 @@ input{
     padding: 24px;
     margin: 10px;
     background-color: transparent;
-    box-shadow: 0px 3px 15px rgba(240, 9, 9, 0.1);
+    box-shadow: 0px 3px 15px rgba(229, 8, 8, 0.1);
     font-size: 40px;
     text-align: right;
     cursor: pointer;
@@ -40,7 +40,7 @@ button{
     background: transparent;
     color: #ffffff;
     font-size: 20px;
-    box-shadow: -8px -8px 15px rgba(21, 21, 21, 0.2);
+    box-shadow: -8px -8px 15px rgba(16, 15, 15, 0.2);
     cursor: pointer;
 }
 
@@ -49,5 +49,5 @@ button{
 }
 
 .equalBtn{
-    background-color: #fb7c14;
+    background-color: #fb3b14;
 }
