@@ -4,7 +4,7 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(45deg, #09a8ec, #f783e2);
+    background: linear-gradient(45deg, #254b51, #27474d);
 }
 
 .calculator{
@@ -28,7 +28,7 @@ input{
 }
 
 input::placeholder{
-    color: #f1eaea;
+    color: #f405d8;
 }
 
 button{
@@ -38,16 +38,16 @@ button{
     margin: 10px;
     border-radius: 50%;
     background: transparent;
-    color: #eff1f3;
+    color: #056bf9;
     font-size: 20px;
     box-shadow: -8px -8px 15px rgba(16, 15, 15, 0.2);
     cursor: pointer;
 }
 
 .operator{
-    color: #6dee0a;
+    color: #4ffc04;
 }
 
 .equalBtn{
-    background-color: #fb3b14;
+    background-color: #fbd814;
 }
