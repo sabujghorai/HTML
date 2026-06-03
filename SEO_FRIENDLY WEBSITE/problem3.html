@@ -1,0 +1,82 @@
+<!-- create a website which has your 5 top used website bookmarked then link should open in a new tab -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>top 5 websites</title>
+    <style>
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Page */
+        body {
+            background-color: #fff5f5;
+            color: red;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Container */
+        div {
+            background-color: white;
+            border: 3px solid red;
+            border-radius: 12px;
+            padding: 30px;
+            width: 500px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
+        }
+
+        /* Heading */
+        div::before {
+            content: "🔖 My Top 5 Websites";
+            display: block;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        /* Links */
+        a {
+            color: red;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Spacing */
+        br {
+            margin-bottom: 15px;
+            display: block;
+            content: "";
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        Click<a href="https://www.zomato.com/" target="_blank">Zomato</a> for your order
+        <br>
+        click<a href="https://github.com/sabujghorai" target="_blank">Github</a>TO go Sabuj Ghorai github page
+        <br>
+        Click <a href="https://www.linkedin.com/in/sabuj-ghorai/" target="_blank">Linkedin</a>
+        <br>
+        Click <a href="https://www.youtube.com/" target="_blank">Youtube</a>
+        <br>
+        Click <a href="https://leetcode.com/u/sabuj_ghorai/" target="_blank">Leetcode</a>
+    </div>
+</body>
+
+</html>
