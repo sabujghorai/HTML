@@ -5,6 +5,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Table - HTML</title>
+    <style>
+        table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px;
+    text-align: left;
+}
+
+td {
+    padding: 12px;
+    border: 1px solid #ddd;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #ddd;
+}
+    </style>
 </head>
 
 <body>
@@ -22,26 +51,26 @@
         <tbody>
             <tr>
                 <td>Sabuj Ghorai</td>
-                <td>175 cm</td>
+                <td>177 cm</td>
                 <td>57 kg</td>
             </tr>
 
             <tr>
                 <td>Akash Ghorai</td>
-                <td>173 cm</td>
-                <td>54 kg</td>
+                <td>175 cm</td>
+                <td>50 kg</td>
             </tr>
 
             <tr>
                 <td>Debendra Ghorai</td>
                 <td>179 cm</td>
-                <td>67 kg</td>
+                <td>63 kg</td>
             </tr>
             
             <tr>
                 <td>Chameli Ghorai</td>
                 <td>165 cm</td>
-                <td>49 kg</td>
+                <td>46 kg</td>
             </tr>
         </tbody>
     </table>
