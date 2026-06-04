@@ -10,9 +10,33 @@
 <body>
     <h1>forms in HTML</h1>
     <form action="/submit.php" target="_blank">
+
+        <!-- Name input  -->
         <div>
             <label for="name">Name</label>
-            <input type="text" placeholder="Enter Name">
+            <input id="name" type="text" placeholder="Enter Name"
+             required>
+        </div>
+
+        <!-- phone number input  -->
+        <div>
+            <label for="Phone">Phone</label>
+            <input id="Phone" type="tel" placeholder="Enter phone " 
+            required>
+        </div>
+
+        <!-- Email input  -->
+         <div>
+            <label for="email">Email</label>
+            <input id="email" type="email" placeholder="Enter email" 
+            required>
+        </div>
+
+        <!-- Password input  -->
+        <div>
+            <label for="pass">Password</label>
+            <input id="pass" type="password" placeholder="Enter Password " 
+            required>
         </div>
     </form>
 </body>
