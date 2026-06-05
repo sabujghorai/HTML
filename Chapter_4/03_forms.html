@@ -5,6 +5,120 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forms - HTML</title>
+    <style>
+        /* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f7fc;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+}
+
+/* Form Container */
+form {
+    background: white;
+    padding: 30px;
+    width: 450px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading */
+h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #333;
+}
+
+/* Form Groups */
+div {
+    margin-bottom: 15px;
+}
+
+/* Labels */
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+    color: #444;
+}
+
+/* Inputs, Select, Textarea */
+input[type="text"],
+input[type="tel"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+select,
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+    outline: none;
+    transition: 0.3s;
+}
+
+/* Focus Effect */
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.4);
+}
+
+/* Radio Buttons Section */
+h3 {
+    margin: 15px 0 10px;
+    color: #333;
+}
+
+input[type="radio"] {
+    margin-right: 5px;
+}
+
+input[type="radio"] + label {
+    display: inline;
+    margin-right: 15px;
+    font-weight: normal;
+}
+
+/* Checkbox */
+input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+/* Button */
+button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button[type="submit"]:hover {
+    background: #357abd;
+}
+
+/* Textarea */
+textarea {
+    resize: vertical;
+}
+    </style>
 </head>
 
 <body>
