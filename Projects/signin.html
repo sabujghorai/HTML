@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix - Sign In</title>
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            font-family:Arial, sans-serif;
+            background:#141414;
+            color:white;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+        }
+
+        .container{
+            width:350px;
+            background:rgba(0,0,0,.8);
+            padding:40px;
+            border-radius:8px;
+        }
+
+        h1{
+            margin-bottom:25px;
+        }
+
+        input{
+            width:100%;
+            padding:15px;
+            margin-bottom:15px;
+            border:none;
+            border-radius:4px;
+        }
+
+        button{
+            width:100%;
+            padding:15px;
+            border:none;
+            background:#e50914;
+            color:white;
+            font-size:16px;
+            border-radius:4px;
+            cursor:pointer;
+        }
+
+        a{
+            color:white;
+            text-decoration:none;
+        }
+
+        .back{
+            display:block;
+            margin-top:20px;
+            text-align:center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Sign In</h1>
+
+        <form>
+            <input type="email" placeholder="Email">
+            <input type="password" placeholder="Password">
+
+            <button type="submit">Sign In</button>
+        </form>
+
+        <a class="back" href="index.html">← Back to Home</a>
+    </div>
+
+</body>
+</html>
