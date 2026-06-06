@@ -6,17 +6,16 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #000;
     color: white;
+    background-color: black;
 }
 
 header {
     min-height: 100vh;
-    background: linear-gradient(
-            rgba(0, 0, 0, 0.7),
-            rgba(0, 0, 0, 0.8)
-        ),
-        url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=1920");
+    background:
+        linear-gradient(rgba(0, 0, 0, 0.7),
+            rgba(0, 0, 0, 0.8)),
+        url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1920");
     background-size: cover;
     background-position: center;
 }
@@ -37,77 +36,94 @@ div {
 select {
     background: transparent;
     color: white;
-    padding: 8px 15px;
     border: 1px solid #888;
     border-radius: 4px;
+    padding: 8px 15px;
     margin-right: 10px;
 }
 
+select option {
+    color: black;
+}
+
+a {
+    text-decoration: none;
+    background-color: #e50914;
+    color: white;
+    padding: 9px 18px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+a:hover {
+    background-color: #c11119;
+}
+
+h1 {
+    text-align: center;
+    font-size: 3.8rem;
+    max-width: 700px;
+    margin: 180px auto 20px;
+}
+
+h3 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+h4 {
+    text-align: center;
+    font-weight: normal;
+}
+
+input[type="email"] {
+    display: block;
+    width: 400px;
+    max-width: 90%;
+    margin: 30px auto 20px;
+    padding: 15px;
+    font-size: 1rem;
+    border-radius: 4px;
+    border: 1px solid #666;
+    background: rgba(22, 22, 22, 0.8);
+    color: white;
+}
+
+input::placeholder {
+    color: #bbb;
+}
+
 button {
+    display: block;
+    margin: 0 auto;
     background-color: #e50914;
     color: white;
     border: none;
-    padding: 10px 20px;
     border-radius: 4px;
-    cursor: pointer;
+    padding: 15px 30px;
+    font-size: 1.2rem;
     font-weight: bold;
+    cursor: pointer;
 }
 
 button:hover {
     background-color: #c11119;
 }
 
-h1 {
-    text-align: center;
-    font-size: 3.5rem;
-    max-width: 700px;
-    margin: 180px auto 20px;
-}
-
-h3,
-h4 {
-    text-align: center;
-    margin-top: 15px;
-}
-
-input[type="email"] {
-    display: block;
-    margin: 30px auto 20px;
-    width: 400px;
-    max-width: 90%;
-    padding: 15px;
-    font-size: 1rem;
-    border: 1px solid #888;
-    border-radius: 4px;
-    background: rgba(22, 22, 22, 0.8);
-    color: white;
-}
-
-input[type="email"]::placeholder {
-    color: #ccc;
-}
-
-input[type="email"] + button {
-    display: block;
-    margin: 0 auto;
-    font-size: 1.2rem;
-    padding: 15px 30px;
-}
-
 @media (max-width: 768px) {
+    div {
+        float: none;
+        text-align: center;
+        margin-top: 15px;
+    }
+
     h1 {
-        font-size: 2rem;
+        font-size: 2.3rem;
         margin-top: 120px;
     }
 
     h3,
     h4 {
         padding: 0 20px;
-    }
-
-    div {
-        float: none;
-        text-align: center;
-        margin-top: 15px;
     }
 }
