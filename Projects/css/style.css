@@ -6,15 +6,14 @@
 
 body {
     font-family: Arial, sans-serif;
+    background: #000;
     color: white;
-    background-color: black;
 }
 
 header {
     min-height: 100vh;
     background:
-        linear-gradient(rgba(0, 0, 0, 0.7),
-            rgba(0, 0, 0, 0.8)),
+        linear-gradient(rgba(0,0,0,.7), rgba(0,0,0,.8)),
         url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1920");
     background-size: cover;
     background-position: center;
@@ -36,7 +35,7 @@ div {
 select {
     background: transparent;
     color: white;
-    border: 1px solid #888;
+    border: 1px solid #666;
     border-radius: 4px;
     padding: 8px 15px;
     margin-right: 10px;
@@ -48,15 +47,18 @@ select option {
 
 a {
     text-decoration: none;
-    background-color: #e50914;
+}
+
+div a {
+    background: #e50914;
     color: white;
-    padding: 9px 18px;
+    padding: 10px 18px;
     border-radius: 4px;
     font-weight: bold;
 }
 
-a:hover {
-    background-color: #c11119;
+div a:hover {
+    background: #c11119;
 }
 
 h1 {
@@ -66,14 +68,10 @@ h1 {
     margin: 180px auto 20px;
 }
 
-h3 {
-    text-align: center;
-    margin-bottom: 10px;
-}
-
+h3,
 h4 {
     text-align: center;
-    font-weight: normal;
+    margin-top: 10px;
 }
 
 input[type="email"] {
@@ -82,7 +80,6 @@ input[type="email"] {
     max-width: 90%;
     margin: 30px auto 20px;
     padding: 15px;
-    font-size: 1rem;
     border-radius: 4px;
     border: 1px solid #666;
     background: rgba(22, 22, 22, 0.8);
@@ -93,21 +90,21 @@ input::placeholder {
     color: #bbb;
 }
 
-button {
+/* Get Started Button */
+#email + a {
     display: block;
+    width: fit-content;
     margin: 0 auto;
-    background-color: #e50914;
+    background: #e50914;
     color: white;
-    border: none;
-    border-radius: 4px;
     padding: 15px 30px;
+    border-radius: 4px;
     font-size: 1.2rem;
     font-weight: bold;
-    cursor: pointer;
 }
 
-button:hover {
-    background-color: #c11119;
+#email + a:hover {
+    background: #c11119;
 }
 
 @media (max-width: 768px) {
@@ -118,12 +115,7 @@ button:hover {
     }
 
     h1 {
-        font-size: 2.3rem;
+        font-size: 2.2rem;
         margin-top: 120px;
-    }
-
-    h3,
-    h4 {
-        padding: 0 20px;
     }
 }
