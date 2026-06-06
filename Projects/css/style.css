@@ -1,0 +1,113 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #000;
+    color: white;
+}
+
+header {
+    min-height: 100vh;
+    background: linear-gradient(
+            rgba(0, 0, 0, 0.7),
+            rgba(0, 0, 0, 0.8)
+        ),
+        url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=1920");
+    background-size: cover;
+    background-position: center;
+}
+
+ul {
+    list-style: none;
+    padding: 25px 10%;
+}
+
+img {
+    width: 150px;
+}
+
+div {
+    float: right;
+}
+
+select {
+    background: transparent;
+    color: white;
+    padding: 8px 15px;
+    border: 1px solid #888;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+button {
+    background-color: #e50914;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #c11119;
+}
+
+h1 {
+    text-align: center;
+    font-size: 3.5rem;
+    max-width: 700px;
+    margin: 180px auto 20px;
+}
+
+h3,
+h4 {
+    text-align: center;
+    margin-top: 15px;
+}
+
+input[type="email"] {
+    display: block;
+    margin: 30px auto 20px;
+    width: 400px;
+    max-width: 90%;
+    padding: 15px;
+    font-size: 1rem;
+    border: 1px solid #888;
+    border-radius: 4px;
+    background: rgba(22, 22, 22, 0.8);
+    color: white;
+}
+
+input[type="email"]::placeholder {
+    color: #ccc;
+}
+
+input[type="email"] + button {
+    display: block;
+    margin: 0 auto;
+    font-size: 1.2rem;
+    padding: 15px 30px;
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2rem;
+        margin-top: 120px;
+    }
+
+    h3,
+    h4 {
+        padding: 0 20px;
+    }
+
+    div {
+        float: none;
+        text-align: center;
+        margin-top: 15px;
+    }
+}
