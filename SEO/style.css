@@ -4,7 +4,8 @@ body{
     padding: auto;
 }
 
-nav{
-    align-items: center;
+nav ul li{
+    text-align: right;
+    align-self: center;
     background-color: red;
 }
