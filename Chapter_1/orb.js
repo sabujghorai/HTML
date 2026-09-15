@@ -1,288 +1,510 @@
-const canvas = document.getElementById("orbCanvas");
-const ctx = canvas.getContext("2d");
+const canvas =
+    document.getElementById("orbCanvas");
 
-let width;
-let height;
+const ctx =
+    canvas.getContext("2d");
 
-let centerX;
-let centerY;
 
-let baseRadius = 190;
+let W;
+let H;
+let DPR;
 
-let rotationX = 0;
-let rotationY = 0;
+let cx;
+let cy;
 
-let speechPower = 0;
-let targetSpeechPower = 0;
+let radius;
+
+
+/* ==========================================
+   ORB SETTINGS
+========================================== */
+
+const LATITUDE_LINES = 68;
+
+const DOTS_PER_LINE = 76;
 
 const particles = [];
 
-const PARTICLE_COUNT = 2200;
+let rotation = 10;
+
+let voiceLevel = 0;
+
+let targetVoiceLevel = 0;
 
 
-// --------------------------------------------------
-// RESIZE
-// --------------------------------------------------
+/* ==========================================
+   RESIZE
+========================================== */
 
-function resizeCanvas() {
+function resize() {
 
-    width = window.innerWidth;
-    height = window.innerHeight;
-
-    const dpr = window.devicePixelRatio || 1;
-
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
-
-    canvas.style.width = width + "px";
-    canvas.style.height = height + "px";
-
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-    centerX = width / 2;
-    centerY = height / 2 - 20;
-
-    baseRadius = Math.min(width, height) * 0.19;
-}
-
-window.addEventListener("resize", resizeCanvas);
-
-resizeCanvas();
+    DPR =
+        Math.min(
+            window.devicePixelRatio || 1,
+            2
+        );
 
 
-// --------------------------------------------------
-// CREATE PARTICLES
-// --------------------------------------------------
+    W =
+        canvas.clientWidth;
 
-for (let i = 0; i < PARTICLE_COUNT; i++) {
+    H =
+        canvas.clientHeight;
 
-    const theta = Math.random() * Math.PI * 2;
 
-    const phi = Math.acos(
-        1 - 2 * Math.random()
+    canvas.width =
+        W * DPR;
+
+    canvas.height =
+        H * DPR;
+
+
+    ctx.setTransform(
+        DPR,
+        0,
+        0,
+        DPR,
+        0,
+        0
     );
 
-    const x = Math.sin(phi) * Math.cos(theta);
-    const y = Math.sin(phi) * Math.sin(theta);
-    const z = Math.cos(phi);
 
-    particles.push({
+    cx =
+        W / 2;
 
-        x,
-        y,
-        z,
+    cy =
+        H / 2;
 
-        theta,
-        phi,
 
-        size: 0.7 + Math.random() * 1.7,
+    /*
+        SMALLER ORB
 
-        brightness: 0.45 + Math.random() * 0.55,
+        Previously the orb was very large.
+        Now it occupies around 55%
+        of the orb area.
+    */
 
-        speed:
-            0.00015 +
-            Math.random() * 0.00025,
-
-        offset:
-            Math.random() * Math.PI * 2
-
-    });
+    radius =
+        Math.min(W, H) * 0.275;
 }
 
 
-// --------------------------------------------------
-// COLOR
-// --------------------------------------------------
+window.addEventListener(
+    "resize",
+    resize
+);
 
-function getParticleColor(x, z, brightness) {
+resize();
 
-    /*
-        Left  = yellow/green
-        Middle = cyan/green
-        Right = cyan/blue
-    */
 
-    const normalizedX = (x + 1) / 2;
+/* ==========================================
+   CREATE PARTICLES
+========================================== */
+
+for (
+    let lat = 0;
+    lat < LATITUDE_LINES;
+    lat++
+) {
+
+    const v =
+        (lat + 0.5) /
+        LATITUDE_LINES;
+
+
+    const phi =
+        Math.PI * v;
+
+
+    const sinPhi =
+        Math.sin(phi);
+
+
+    const cosPhi =
+        Math.cos(phi);
+
+
+    for (
+        let i = 0;
+        i < DOTS_PER_LINE;
+        i++
+    ) {
+
+        const u =
+            i / DOTS_PER_LINE;
+
+
+        const theta =
+            u *
+            Math.PI *
+            2;
+
+
+        particles.push({
+
+            theta:
+                theta +
+                (Math.random() - 0.5)
+                * 0.004,
+
+            phi:
+                phi +
+                (Math.random() - 0.5)
+                * 0.004,
+
+            size:
+                0.65 +
+                Math.random() * 0.65,
+
+            brightness:
+                0.70 +
+                Math.random() * 0.30,
+
+            offset:
+                Math.random() *
+                Math.PI *
+                2
+
+        });
+    }
+}
+
+
+/* ==========================================
+   COLOR
+========================================== */
+
+function getColor(
+    x,
+    brightness
+) {
+
+    const t =
+        (x + 1) / 2;
+
 
     let r;
     let g;
     let b;
 
-    if (normalizedX < 0.45) {
 
-        const t = normalizedX / 0.45;
+    /*
+        YELLOW
+          ↓
+        GREEN
+          ↓
+        CYAN
+          ↓
+        BLUE
+    */
 
-        r = 255 * (1 - t) + 0 * t;
-        g = 220 * (1 - t) + 255 * t;
-        b = 20 * (1 - t) + 150 * t;
 
-    } else {
+    if (t < 0.30) {
 
-        const t = (normalizedX - 0.45) / 0.55;
+        const p =
+            t / 0.30;
 
-        r = 0;
-        g = 255 * (1 - t) + 80 * t;
-        b = 150 * (1 - t) + 255 * t;
+
+        r =
+            255 -
+            225 * p;
+
+
+        g =
+            235 +
+            20 * p;
+
+
+        b =
+            10 +
+            60 * p;
+
     }
 
+    else if (t < 0.58) {
+
+        const p =
+            (t - 0.30) /
+            0.28;
+
+
+        r =
+            30 -
+            30 * p;
+
+
+        g =
+            255;
+
+
+        b =
+            70 +
+            155 * p;
+
+    }
+
+    else {
+
+        const p =
+            (t - 0.58) /
+            0.42;
+
+
+        r =
+            0;
+
+
+        g =
+            255 -
+            180 * p;
+
+
+        b =
+            225 +
+            30 * p;
+    }
+
+
     r *= brightness;
+
     g *= brightness;
+
     b *= brightness;
 
-    return `rgb(${r}, ${g}, ${b})`;
+
+    return `
+        rgb(
+            ${r},
+            ${g},
+            ${b}
+        )
+    `;
 }
 
 
-// --------------------------------------------------
-// 3D ROTATION
-// --------------------------------------------------
+/* ==========================================
+   DRAW ORB
+========================================== */
 
-function rotatePoint(x, y, z, angleX, angleY) {
+function draw(time) {
 
-    // Rotate around Y
-
-    const cosY = Math.cos(angleY);
-    const sinY = Math.sin(angleY);
-
-    let x1 = x * cosY - z * sinY;
-    let z1 = x * sinY + z * cosY;
-
-    // Rotate around X
-
-    const cosX = Math.cos(angleX);
-    const sinX = Math.sin(angleX);
-
-    let y1 = y * cosX - z1 * sinX;
-    let z2 = y * sinX + z1 * cosX;
-
-    return {
-        x: x1,
-        y: y1,
-        z: z2
-    };
-}
+    ctx.clearRect(
+        0,
+        0,
+        W,
+        H
+    );
 
 
-// --------------------------------------------------
-// DRAW ORB
-// --------------------------------------------------
+    /* Smooth voice animation */
 
-function drawOrb(time) {
-
-    ctx.clearRect(0, 0, width, height);
-
-    // Slowly rotate
-
-    rotationY += 0.0025;
-    rotationX += 0.0007;
+    voiceLevel +=
+        (
+            targetVoiceLevel -
+            voiceLevel
+        ) * 0.10;
 
 
-    // Smooth voice response
+    /* Slow rotation */
 
-    speechPower +=
-        (targetSpeechPower - speechPower) * 0.12;
-
-
-    // Voice expansion
-
-    const voiceScale =
-        1 + speechPower * 0.30;
+    rotation +=
+        0.0022 +
+        voiceLevel * 0.002;
 
 
-    const radius =
-        baseRadius * voiceScale;
+    /*
+        Speech makes the orb
+        slightly larger.
+    */
+
+    const scale =
+        1 +
+        voiceLevel * 0.18;
 
 
-    // Draw particles
-
-    for (const particle of particles) {
-
-        const rotated = rotatePoint(
-            particle.x,
-            particle.y,
-            particle.z,
-            rotationX,
-            rotationY
-        );
+    const currentRadius =
+        radius * scale;
 
 
-        // Organic movement
+    /* ======================================
+       PARTICLES
+    ====================================== */
 
-        const wave =
-            Math.sin(
-                time * 0.0015 +
-                particle.offset
-            ) * 0.012;
+    for (const p of particles) {
 
-
-        const px =
-            rotated.x * (radius + wave * radius);
+        const theta =
+            p.theta +
+            rotation;
 
 
-        const py =
-            rotated.y * (radius + wave * radius);
+        const phi =
+            p.phi;
 
 
-        const depth =
-            (rotated.z + 1) / 2;
+        const sinPhi =
+            Math.sin(phi);
+
+
+        const cosPhi =
+            Math.cos(phi);
+
+
+        let x =
+            sinPhi *
+            Math.cos(theta);
+
+
+        let y =
+            cosPhi;
+
+
+        let z =
+            sinPhi *
+            Math.sin(theta);
 
 
         /*
-            Perspective.
-            Particles closer to camera appear larger.
+            Very subtle organic movement.
         */
 
-        const perspective =
-            0.75 + depth * 0.55;
+        const movement =
+            Math.sin(
+                time * 0.0014 +
+                p.offset
+            ) * 0.004;
 
 
-        const screenX =
-            centerX + px * perspective;
+        x += movement;
+
+        y +=
+            movement * 0.4;
 
 
-        const screenY =
-            centerY + py * perspective;
+        /*
+            Hide the back side.
+        */
 
+        if (z < -0.08) {
 
-        // Hide particles behind the sphere
-
-        if (rotated.z < -0.05) {
             continue;
         }
 
 
-        // Voice makes dots brighter
+        /*
+            Depth.
+        */
 
-        const brightness =
-            particle.brightness *
-            (0.55 + depth * 0.75) *
-            (1 + speechPower * 1.5);
-
-
-        const size =
-            particle.size *
-            perspective *
-            (1 + speechPower * 0.9);
+        const depth =
+            (z + 1) / 2;
 
 
-        const color =
-            getParticleColor(
-                rotated.x,
-                rotated.z,
-                Math.min(brightness, 1.5)
+        const perspective =
+            0.82 +
+            depth * 0.18;
+
+
+        const screenX =
+            cx +
+            x *
+            currentRadius *
+            perspective;
+
+
+        const screenY =
+            cy +
+            y *
+            currentRadius *
+            perspective;
+
+
+        /*
+            Edge brightness.
+        */
+
+        const distance =
+            Math.sqrt(
+                x * x +
+                y * y
             );
 
 
-        // Glow
+        const edge =
+            Math.pow(
+                Math.min(
+                    distance,
+                    1
+                ),
+                2.1
+            );
+
+
+        /*
+            Keep the center dark.
+        */
+
+        const centerBrightness =
+            0.30 +
+            edge * 0.70;
+
+
+        const depthBrightness =
+            0.42 +
+            depth * 0.68;
+
+
+        const brightness =
+            p.brightness *
+            centerBrightness *
+            depthBrightness *
+            (
+                1 +
+                voiceLevel * 0.5
+            );
+
+
+        /*
+            Small dots.
+        */
+
+        const size =
+            p.size *
+            perspective *
+            (
+                1 +
+                voiceLevel * 0.35
+            );
+
+
+        const color =
+            getColor(
+                x,
+                Math.min(
+                    brightness,
+                    1.2
+                )
+            );
+
+
+        /*
+            Draw dot.
+        */
 
         ctx.beginPath();
 
-        ctx.fillStyle = color;
+
+        ctx.fillStyle =
+            color;
+
+
+        ctx.shadowColor =
+            color;
+
 
         ctx.shadowBlur =
-            3 + speechPower * 8;
+            voiceLevel > 0.08
+                ? 3
+                : 1.5;
 
-        ctx.shadowColor = color;
 
         ctx.arc(
             screenX,
@@ -292,80 +514,38 @@ function drawOrb(time) {
             Math.PI * 2
         );
 
+
         ctx.fill();
     }
 
 
-    // Remove shadow after drawing
-
     ctx.shadowBlur = 0;
 
 
-    // Soft outer glow
-
-    const glowRadius =
-        radius * 1.05;
-
-
-    const gradient =
-        ctx.createRadialGradient(
-            centerX,
-            centerY,
-            radius * 0.5,
-
-            centerX,
-            centerY,
-            glowRadius
-        );
-
-
-    gradient.addColorStop(
-        0,
-        "rgba(0, 210, 255, 0)"
+    requestAnimationFrame(
+        draw
     );
-
-    gradient.addColorStop(
-        0.75,
-        `rgba(0, 200, 255, ${0.015 + speechPower * 0.04})`
-    );
-
-    gradient.addColorStop(
-        1,
-        `rgba(0, 140, 255, ${0.05 + speechPower * 0.12})`
-    );
-
-
-    ctx.beginPath();
-
-    ctx.fillStyle = gradient;
-
-    ctx.arc(
-        centerX,
-        centerY,
-        glowRadius,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fill();
-
-
-    requestAnimationFrame(drawOrb);
 }
 
 
-// Start animation
+requestAnimationFrame(
+    draw
+);
 
-requestAnimationFrame(drawOrb);
 
+/* ==========================================
+   VOICE POWER
+========================================== */
 
-// --------------------------------------------------
-// VOICE CONTROL
-// --------------------------------------------------
+window.setSpeechPower =
+    function (power) {
 
-window.setSpeechPower = function(power) {
-
-    targetSpeechPower =
-        Math.min(Math.max(power, 0), 1);
-
-};
+        targetVoiceLevel =
+            Math.max(
+                0,
+                Math.min(
+                    1,
+                    power
+                )
+            );
+    };

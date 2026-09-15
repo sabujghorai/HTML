@@ -1,33 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>MIRA Orb</title>
+    <title>MIRA</title>
 
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <main class="orb-container">
+    <main class="mira-interface">
 
-        <canvas id="orbCanvas"></canvas>
+        <!-- Speech text area -->
+        <div class="speech-area" id="speechArea">
 
-        <div class="status">
-            <span id="statusDot"></span>
-            <span id="statusText">MIRA READY</span>
+            <div
+                id="speechText"
+                class="speech-text"
+            >
+                Listening...
+            </div>
+
         </div>
 
-        <button id="micButton">
-            START LISTENING
-        </button>
+
+        <!-- Animated orb -->
+        <div class="orb-area">
+
+            <canvas id="orbCanvas"></canvas>
+
+        </div>
 
     </main>
+
 
     <script src="orb.js"></script>
     <script src="script.js"></script>
 
 </body>
+
 </html>

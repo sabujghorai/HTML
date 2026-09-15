@@ -24,152 +24,241 @@ body {
 
 body {
 
-    background:
-
-        radial-gradient(
-            circle at center,
-            rgba(0, 40, 55, 0.15),
-            rgba(0, 0, 0, 1) 60%
-        );
-
-}
-
-
-.orb-container {
-
-    width: 100vw;
-    height: 100vh;
-
-    position: relative;
-
     display: flex;
 
     justify-content: center;
 
     align-items: center;
 
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(0, 40, 55, 0.08),
+            #000 65%
+        );
+}
+
+
+/* ==========================================
+   MAIN INTERFACE
+========================================== */
+
+.mira-interface {
+
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+
     flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    position: relative;
 }
 
 
-#orbCanvas {
+/* ==========================================
+   SPEECH AREA
+========================================== */
+
+.speech-area {
+
+    width: min(620px, 72vw);
+
+    min-height: 90px;
+
+    max-height: 180px;
+
+    padding: 20px 26px;
 
     position: absolute;
 
-    top: 0;
-    left: 0;
+    top: 17%;
 
-    width: 100%;
-    height: 100%;
+    left: 50%;
 
-    pointer-events: none;
-}
-
-
-.status {
-
-    position: absolute;
-
-    bottom: 115px;
+    transform:
+        translateX(-50%);
 
     display: flex;
 
     align-items: center;
 
-    gap: 10px;
+    justify-content: center;
 
-    color: rgba(100, 220, 255, 0.85);
+    overflow: hidden;
 
-    font-size: 12px;
+    border-radius: 18px;
 
-    letter-spacing: 4px;
+    background:
+        rgba(5, 18, 24, 0.58);
 
-    font-weight: 500;
-
-    text-shadow:
-        0 0 10px rgba(0, 200, 255, 0.6);
-}
-
-
-#statusDot {
-
-    width: 7px;
-    height: 7px;
-
-    border-radius: 50%;
-
-    background: #1c7080;
+    border:
+        1px solid
+        rgba(0, 210, 255, 0.15);
 
     box-shadow:
-        0 0 5px #1c7080;
+        0 0 30px
+        rgba(0, 150, 200, 0.04);
+
+    backdrop-filter:
+        blur(14px);
+
+    -webkit-backdrop-filter:
+        blur(14px);
 
     transition:
-        all 0.2s ease;
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
 }
 
 
-#statusDot.active {
+/* When Mira is actively listening */
 
-    background: #00eaff;
+.speech-area.active {
+
+    border-color:
+        rgba(0, 220, 255, 0.35);
 
     box-shadow:
-        0 0 5px #00eaff,
-        0 0 15px #00eaff,
-        0 0 25px #00eaff;
+        0 0 35px
+        rgba(0, 200, 255, 0.08);
 }
 
 
-#micButton {
+/* ==========================================
+   SPEECH TEXT
+========================================== */
+
+.speech-text {
+
+    width: 100%;
+
+    color:
+        rgba(225, 248, 255, 0.92);
+
+    font-size: 20px;
+
+    line-height: 1.55;
+
+    font-weight: 400;
+
+    text-align: center;
+
+    letter-spacing: 0.2px;
+
+    word-wrap: break-word;
+
+    overflow-wrap: anywhere;
+
+    max-height: 135px;
+
+    overflow-y: auto;
+
+    scrollbar-width: none;
+
+    text-shadow:
+        0 0 12px
+        rgba(0, 190, 255, 0.18);
+
+}
+
+
+.speech-text::-webkit-scrollbar {
+
+    display: none;
+}
+
+
+/* Placeholder */
+
+.speech-text.placeholder {
+
+    color:
+        rgba(110, 170, 185, 0.45);
+
+    font-size: 15px;
+
+    letter-spacing: 1px;
+}
+
+
+/* ==========================================
+   ORB AREA
+========================================== */
+
+.orb-area {
+
+    width: 420px;
+
+    height: 420px;
 
     position: absolute;
 
-    bottom: 50px;
+    top: 42%;
 
-    padding: 12px 25px;
+    left: 50%;
 
-    border: 1px solid
-        rgba(0, 220, 255, 0.35);
+    transform:
+        translateX(-50%);
 
-    border-radius: 25px;
+    display: flex;
 
-    background:
-        rgba(0, 30, 40, 0.55);
+    justify-content: center;
 
-    color:
-        rgba(130, 230, 255, 0.9);
-
-    font-size: 11px;
-
-    letter-spacing: 2px;
-
-    cursor: pointer;
-
-    transition:
-        all 0.25s ease;
-
-    backdrop-filter:
-        blur(10px);
+    align-items: center;
 }
 
 
-#micButton:hover {
+/* ==========================================
+   CANVAS
+========================================== */
 
-    border-color:
-        rgba(0, 240, 255, 0.8);
+#orbCanvas {
 
-    color: white;
+    width: 100%;
 
-    box-shadow:
-        0 0 20px
-        rgba(0, 210, 255, 0.2);
+    height: 100%;
 
-    transform:
-        translateY(-2px);
+    display: block;
+
+    pointer-events: none;
 }
 
 
-#micButton:active {
+/* ==========================================
+   RESPONSIVE
+========================================== */
 
-    transform:
-        scale(0.96);
+@media (max-width: 700px) {
+
+    .speech-area {
+
+        width: 82vw;
+
+        top: 13%;
+
+        min-height: 80px;
+
+        padding: 17px 20px;
+    }
+
+
+    .speech-text {
+
+        font-size: 17px;
+    }
+
+
+    .orb-area {
+
+        width: 300px;
+
+        height: 300px;
+
+        top: 43%;
+    }
 }

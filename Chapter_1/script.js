@@ -1,32 +1,182 @@
-const micButton =
-    document.getElementById("micButton");
-
-const statusText =
-    document.getElementById("statusText");
-
-const statusDot =
-    document.getElementById("statusDot");
-
-
 let audioContext = null;
+
 let analyser = null;
+
 let microphone = null;
+
+let microphoneStream = null;
 
 let listening = false;
 
 
-// --------------------------------------------------
-// START MICROPHONE
-// --------------------------------------------------
+const speechText =
+    document.getElementById(
+        "speechText"
+    );
 
-async function startMicrophone() {
+
+const speechArea =
+    document.getElementById(
+        "speechArea"
+    );
+
+
+/* ==========================================
+   SPEECH RECOGNITION
+========================================== */
+
+const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+
+let recognition = null;
+
+
+let finalText = "";
+
+let interimText = "";
+
+
+if (SpeechRecognition) {
+
+    recognition =
+        new SpeechRecognition();
+
+
+    recognition.continuous = true;
+
+    recognition.interimResults = true;
+
+    recognition.lang = "en-IN";
+
+
+    /*
+        Keep listening after pauses.
+    */
+
+    recognition.onend =
+        function() {
+
+            if (listening) {
+
+                try {
+
+                    recognition.start();
+
+                } catch (error) {
+
+                    console.log(
+                        "Recognition restarting..."
+                    );
+                }
+            }
+        };
+
+
+    /*
+        Speech result.
+    */
+
+    recognition.onresult =
+        function(event) {
+
+            interimText = "";
+
+
+            for (
+                let i =
+                    event.resultIndex;
+
+                i <
+                event.results.length;
+
+                i++
+            ) {
+
+                const result =
+                    event.results[i];
+
+
+                const text =
+                    result[0].transcript;
+
+
+                if (
+                    result.isFinal
+                ) {
+
+                    finalText +=
+                        text + " ";
+
+                }
+
+                else {
+
+                    interimText +=
+                        text;
+                }
+            }
+
+
+            /*
+                Display final +
+                currently spoken words.
+            */
+
+            const displayText =
+                (
+                    finalText +
+                    interimText
+                ).trim();
+
+
+            if (displayText.length > 0) {
+
+                speechText.textContent =
+                    displayText;
+
+                speechText.classList.remove(
+                    "placeholder"
+                );
+            }
+        };
+
+
+    recognition.onerror =
+        function(event) {
+
+            console.log(
+                "Speech recognition:",
+                event.error
+            );
+        };
+
+}
+
+
+/* ==========================================
+   START MICROPHONE
+========================================== */
+
+async function startListening() {
 
     try {
 
-        const stream =
-            await navigator.mediaDevices.getUserMedia({
-                audio: true
-            });
+        microphoneStream =
+            await navigator.mediaDevices
+                .getUserMedia({
+
+                    audio: {
+
+                        echoCancellation: true,
+
+                        noiseSuppression: true,
+
+                        autoGainControl: true
+                    }
+
+                });
 
 
         audioContext =
@@ -40,102 +190,96 @@ async function startMicrophone() {
             audioContext.createAnalyser();
 
 
-        analyser.fftSize = 512;
+        analyser.fftSize =
+            512;
 
-        analyser.smoothingTimeConstant = 0.75;
+
+        analyser.smoothingTimeConstant =
+            0.75;
 
 
         microphone =
-            audioContext.createMediaStreamSource(
-                stream
-            );
+            audioContext
+                .createMediaStreamSource(
+                    microphoneStream
+                );
 
 
-        microphone.connect(analyser);
+        microphone.connect(
+            analyser
+        );
 
 
         listening = true;
 
 
-        micButton.textContent =
-            "STOP LISTENING";
-
-
-        statusText.textContent =
-            "LISTENING";
-
-
-        statusDot.classList.add(
+        speechArea.classList.add(
             "active"
         );
 
 
-        detectVoice();
+        /*
+            Start speech recognition.
+        */
+
+        if (recognition) {
+
+            finalText = "";
+
+            interimText = "";
+
+
+            speechText.textContent =
+                "Listening...";
+
+
+            speechText.classList.add(
+                "placeholder"
+            );
+
+
+            try {
+
+                recognition.start();
+
+            } catch (error) {
+
+                console.log(
+                    "Recognition already running."
+                );
+            }
+        }
+
+
+        analyseVoice();
 
 
     } catch (error) {
 
-        console.error(error);
-
-        statusText.textContent =
-            "MICROPHONE BLOCKED";
-
-        alert(
-            "Microphone permission is required for voice animation."
+        console.error(
+            "Microphone error:",
+            error
         );
+
+
+        speechText.textContent =
+            "Microphone permission required.";
+
     }
 }
 
 
-// --------------------------------------------------
-// STOP MICROPHONE
-// --------------------------------------------------
+/* ==========================================
+   VOICE ANALYSIS
+========================================== */
 
-function stopMicrophone() {
+function analyseVoice() {
 
-    listening = false;
+    if (
+        !listening ||
+        !analyser
+    ) {
 
-
-    if (microphone) {
-
-        microphone.disconnect();
-
-        microphone = null;
-    }
-
-
-    if (audioContext) {
-
-        audioContext.close();
-
-        audioContext = null;
-    }
-
-
-    setSpeechPower(0);
-
-
-    micButton.textContent =
-        "START LISTENING";
-
-
-    statusText.textContent =
-        "MIRA READY";
-
-
-    statusDot.classList.remove(
-        "active"
-    );
-}
-
-
-// --------------------------------------------------
-// DETECT VOICE
-// --------------------------------------------------
-
-function detectVoice() {
-
-    if (!listening || !analyser) {
         return;
     }
 
@@ -154,89 +298,110 @@ function detectVoice() {
     let sum = 0;
 
 
-    for (let i = 0; i < data.length; i++) {
+    for (
+        let i = 0;
+        i < data.length;
+        i++
+    ) {
 
         const value =
-            (data[i] - 128) / 128;
+            (
+                data[i] -
+                128
+            ) / 128;
 
-        sum += value * value;
+
+        sum +=
+            value * value;
     }
 
 
     const rms =
         Math.sqrt(
-            sum / data.length
+            sum /
+            data.length
         );
 
 
     /*
-        Noise gate.
-
-        Small microphone noise
-        won't make the orb move.
+        Microphone noise gate.
     */
 
-    const noiseGate = 0.025;
+    const noiseGate =
+        0.018;
 
 
-    let voice = 0;
+    let level = 0;
 
 
-    if (rms > noiseGate) {
+    if (
+        rms >
+        noiseGate
+    ) {
 
-        voice =
-            (rms - noiseGate) /
-            (0.25 - noiseGate);
+        level =
+            (
+                rms -
+                noiseGate
+            ) / 0.22;
 
-        voice =
-            Math.min(Math.max(voice, 0), 1);
+
+        level =
+            Math.min(
+                Math.max(
+                    level,
+                    0
+                ),
+                1
+            );
     }
 
 
     /*
-        Make the response smoother.
+        Make speech response
+        smooth and natural.
     */
 
-    voice =
-        Math.pow(voice, 0.65);
+    level =
+        Math.pow(
+            level,
+            0.58
+        );
 
 
-    setSpeechPower(voice);
+    if (
+        typeof window.setSpeechPower ===
+        "function"
+    ) {
 
-
-    if (voice > 0.08) {
-
-        statusText.textContent =
-            "MIRA LISTENING";
-
-    } else {
-
-        statusText.textContent =
-            "LISTENING";
+        window.setSpeechPower(
+            level
+        );
     }
 
 
     requestAnimationFrame(
-        detectVoice
+        analyseVoice
     );
 }
 
 
-// --------------------------------------------------
-// BUTTON
-// --------------------------------------------------
+/* ==========================================
+   START WHEN USER CLICKS
+========================================== */
 
-micButton.addEventListener(
+document.addEventListener(
     "click",
-    () => {
+    function startOnce() {
 
         if (!listening) {
 
-            startMicrophone();
+            startListening();
 
-        } else {
-
-            stopMicrophone();
         }
+
+    },
+    {
+        once: true
     }
 );
