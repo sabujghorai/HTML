@@ -1,407 +1,551 @@
-let audioContext = null;
+const canvas =
+    document.getElementById("orbCanvas");
 
-let analyser = null;
-
-let microphone = null;
-
-let microphoneStream = null;
-
-let listening = false;
+const ctx =
+    canvas.getContext("2d");
 
 
-const speechText =
-    document.getElementById(
-        "speechText"
-    );
+let W;
+let H;
+let DPR;
 
+let cx;
+let cy;
 
-const speechArea =
-    document.getElementById(
-        "speechArea"
-    );
+let radius;
 
 
 /* ==========================================
-   SPEECH RECOGNITION
+   ORB SETTINGS
 ========================================== */
 
-const SpeechRecognition =
-    window.SpeechRecognition ||
-    window.webkitSpeechRecognition;
+const LATITUDE_LINES = 68;
+
+const DOTS_PER_LINE = 76;
+
+const particles = [];
+
+let rotation = 10;
+
+let voiceLevel = 0;
+
+let targetVoiceLevel = 0;
 
 
-let recognition = null;
+/* ==========================================
+   RESIZE
+========================================== */
+
+function resize() {
+
+    DPR =
+        Math.min(
+            window.devicePixelRatio || 1,
+            2
+        );
 
 
-let finalText = "";
+    W =
+        canvas.clientWidth;
 
-let interimText = "";
-
-
-if (SpeechRecognition) {
-
-    recognition =
-        new SpeechRecognition();
+    H =
+        canvas.clientHeight;
 
 
-    recognition.continuous = true;
+    canvas.width =
+        W * DPR;
 
-    recognition.interimResults = true;
+    canvas.height =
+        H * DPR;
 
-    recognition.lang = "en-IN";
+
+    ctx.setTransform(
+        DPR,
+        0,
+        0,
+        DPR,
+        0,
+        0
+    );
+
+
+    cx =
+        W / 2;
+
+    cy =
+        H / 2;
 
 
     /*
-        Keep listening after pauses.
+        SMALLER ORB
+
+        Previously the orb was very large.
+        Now it occupies around 55%
+        of the orb area.
     */
 
-    recognition.onend =
-        function() {
-
-            if (listening) {
-
-                try {
-
-                    recognition.start();
-
-                } catch (error) {
-
-                    console.log(
-                        "Recognition restarting..."
-                    );
-                }
-            }
-        };
-
-
-    /*
-        Speech result.
-    */
-
-    recognition.onresult =
-        function(event) {
-
-            interimText = "";
-
-
-            for (
-                let i =
-                    event.resultIndex;
-
-                i <
-                event.results.length;
-
-                i++
-            ) {
-
-                const result =
-                    event.results[i];
-
-
-                const text =
-                    result[0].transcript;
-
-
-                if (
-                    result.isFinal
-                ) {
-
-                    finalText +=
-                        text + " ";
-
-                }
-
-                else {
-
-                    interimText +=
-                        text;
-                }
-            }
-
-
-            /*
-                Display final +
-                currently spoken words.
-            */
-
-            const displayText =
-                (
-                    finalText +
-                    interimText
-                ).trim();
-
-
-            if (displayText.length > 0) {
-
-                speechText.textContent =
-                    displayText;
-
-                speechText.classList.remove(
-                    "placeholder"
-                );
-            }
-        };
-
-
-    recognition.onerror =
-        function(event) {
-
-            console.log(
-                "Speech recognition:",
-                event.error
-            );
-        };
-
+    radius =
+        Math.min(W, H) * 0.275;
 }
 
 
-/* ==========================================
-   START MICROPHONE
-========================================== */
+window.addEventListener(
+    "resize",
+    resize
+);
 
-async function startListening() {
-
-    try {
-
-        microphoneStream =
-            await navigator.mediaDevices
-                .getUserMedia({
-
-                    audio: {
-
-                        echoCancellation: true,
-
-                        noiseSuppression: true,
-
-                        autoGainControl: true
-                    }
-
-                });
-
-
-        audioContext =
-            new (
-                window.AudioContext ||
-                window.webkitAudioContext
-            )();
-
-
-        analyser =
-            audioContext.createAnalyser();
-
-
-        analyser.fftSize =
-            512;
-
-
-        analyser.smoothingTimeConstant =
-            0.75;
-
-
-        microphone =
-            audioContext
-                .createMediaStreamSource(
-                    microphoneStream
-                );
-
-
-        microphone.connect(
-            analyser
-        );
-
-
-        listening = true;
-
-
-        speechArea.classList.add(
-            "active"
-        );
-
-
-        /*
-            Start speech recognition.
-        */
-
-        if (recognition) {
-
-            finalText = "";
-
-            interimText = "";
-
-
-            speechText.textContent =
-                "Listening...";
-
-
-            speechText.classList.add(
-                "placeholder"
-            );
-
-
-            try {
-
-                recognition.start();
-
-            } catch (error) {
-
-                console.log(
-                    "Recognition already running."
-                );
-            }
-        }
-
-
-        analyseVoice();
-
-
-    } catch (error) {
-
-        console.error(
-            "Microphone error:",
-            error
-        );
-
-
-        speechText.textContent =
-            "Microphone permission required.";
-
-    }
-}
+resize();
 
 
 /* ==========================================
-   VOICE ANALYSIS
+   CREATE PARTICLES
 ========================================== */
 
-function analyseVoice() {
+for (
+    let lat = 0;
+    lat < LATITUDE_LINES;
+    lat++
+) {
 
-    if (
-        !listening ||
-        !analyser
-    ) {
-
-        return;
-    }
-
-
-    const data =
-        new Uint8Array(
-            analyser.fftSize
-        );
+    const v =
+        (lat + 0.5) /
+        LATITUDE_LINES;
 
 
-    analyser.getByteTimeDomainData(
-        data
-    );
+    const phi =
+        Math.PI * v;
 
 
-    let sum = 0;
+    const sinPhi =
+        Math.sin(phi);
+
+
+    const cosPhi =
+        Math.cos(phi);
 
 
     for (
         let i = 0;
-        i < data.length;
+        i < DOTS_PER_LINE;
         i++
     ) {
 
-        const value =
-            (
-                data[i] -
-                128
-            ) / 128;
+        const u =
+            i / DOTS_PER_LINE;
 
 
-        sum +=
-            value * value;
+        const theta =
+            u *
+            Math.PI *
+            2;
+
+
+        particles.push({
+
+            theta:
+                theta +
+                (Math.random() - 0.5)
+                * 0.004,
+
+            phi:
+                phi +
+                (Math.random() - 0.5)
+                * 0.004,
+
+            size:
+                0.65 +
+                Math.random() * 0.65,
+
+            brightness:
+                0.70 +
+                Math.random() * 0.30,
+
+            offset:
+                Math.random() *
+                Math.PI *
+                2
+
+        });
     }
-
-
-    const rms =
-        Math.sqrt(
-            sum /
-            data.length
-        );
-
-
-    /*
-        Microphone noise gate.
-    */
-
-    const noiseGate =
-        0.018;
-
-
-    let level = 0;
-
-
-    if (
-        rms >
-        noiseGate
-    ) {
-
-        level =
-            (
-                rms -
-                noiseGate
-            ) / 0.22;
-
-
-        level =
-            Math.min(
-                Math.max(
-                    level,
-                    0
-                ),
-                1
-            );
-    }
-
-
-    /*
-        Make speech response
-        smooth and natural.
-    */
-
-    level =
-        Math.pow(
-            level,
-            0.58
-        );
-
-
-    if (
-        typeof window.setSpeechPower ===
-        "function"
-    ) {
-
-        window.setSpeechPower(
-            level
-        );
-    }
-
-
-    requestAnimationFrame(
-        analyseVoice
-    );
 }
 
 
 /* ==========================================
-   START WHEN USER CLICKS
+   COLOR
 ========================================== */
 
-document.addEventListener(
-    "click",
-    function startOnce() {
+function getColor(
+    x,
+    brightness
+) {
 
-        if (!listening) {
+    const t =
+        (x + 1) / 2;
 
-            startListening();
 
+    let r;
+    let g;
+    let b;
+
+
+    /*
+        YELLOW
+          ↓
+        GREEN
+          ↓
+        CYAN
+          ↓
+        BLUE
+    */
+
+
+    if (t < 0.30) {
+
+        const p =
+            t / 0.30;
+
+
+        r =
+            255 -
+            225 * p;
+
+
+        g =
+            235 +
+            20 * p;
+
+
+        b =
+            10 +
+            60 * p;
+
+    }
+
+    else if (t < 0.58) {
+
+        const p =
+            (t - 0.30) /
+            0.28;
+
+
+        r =
+            30 -
+            30 * p;
+
+
+        g =
+            255;
+
+
+        b =
+            70 +
+            155 * p;
+
+    }
+
+    else {
+
+        const p =
+            (t - 0.58) /
+            0.42;
+
+
+        r =
+            0;
+
+
+        g =
+            255 -
+            180 * p;
+
+
+        b =
+            225 +
+            30 * p;
+    }
+
+
+    r *= brightness;
+
+    g *= brightness;
+
+    b *= brightness;
+
+
+    return `
+        rgb(
+            ${r},
+            ${g},
+            ${b}
+        )
+    `;
+}
+
+
+/* ==========================================
+   DRAW ORB
+========================================== */
+
+function draw(time) {
+
+    ctx.clearRect(
+        0,
+        0,
+        W,
+        H
+    );
+
+
+    /* Smooth voice animation */
+
+    voiceLevel +=
+        (
+            targetVoiceLevel -
+            voiceLevel
+        ) * 0.10;
+
+
+    /* Slow rotation */
+
+    rotation +=
+        0.0022 +
+        voiceLevel * 0.002;
+
+
+    /*
+        Speech makes the orb
+        slightly larger.
+    */
+
+    const scale =
+        1 +
+        voiceLevel * 0.18;
+
+
+    const currentRadius =
+        radius * scale;
+
+
+    /* ======================================
+       PARTICLES
+    ====================================== */
+
+    for (const p of particles) {
+
+        const theta =
+            p.theta +
+            rotation;
+
+
+        const phi =
+            p.phi;
+
+
+        const sinPhi =
+            Math.sin(phi);
+
+
+        const cosPhi =
+            Math.cos(phi);
+
+
+        let x =
+            sinPhi *
+            Math.cos(theta);
+
+
+        let y =
+            cosPhi;
+
+
+        let z =
+            sinPhi *
+            Math.sin(theta);
+
+
+        /*
+            Very subtle organic movement.
+        */
+
+        const movement =
+            Math.sin(
+                time * 0.0014 +
+                p.offset
+            ) * 0.004;
+
+
+        x += movement;
+
+        y +=
+            movement * 0.4;
+
+
+        /*
+            Hide the back side.
+        */
+
+        if (z < -0.08) {
+
+            continue;
         }
 
-    },
-    {
-        once: true
+
+        /*
+            Depth.
+        */
+
+        const depth =
+            (z + 1) / 2;
+
+
+        const perspective =
+            0.82 +
+            depth * 0.18;
+
+
+        const screenX =
+            cx +
+            x *
+            currentRadius *
+            perspective;
+
+
+        const screenY =
+            cy +
+            y *
+            currentRadius *
+            perspective;
+
+
+        /*
+            Edge brightness.
+        */
+
+        const distance =
+            Math.sqrt(
+                x * x +
+                y * y
+            );
+
+
+        const edge =
+            Math.pow(
+                Math.min(
+                    distance,
+                    1
+                ),
+                2.1
+            );
+
+
+        /*
+            Keep the center dark.
+        */
+
+        const centerBrightness =
+            0.30 +
+            edge * 0.70;
+
+
+        const depthBrightness =
+            0.42 +
+            depth * 0.68;
+
+
+        const brightness =
+            p.brightness *
+            centerBrightness *
+            depthBrightness *
+            (
+                1 +
+                voiceLevel * 0.5
+            );
+
+
+        /*
+            Small dots.
+        */
+
+        const size =
+            p.size *
+            perspective *
+            (
+                1 +
+                voiceLevel * 0.35
+            );
+
+
+        const color =
+            getColor(
+                x,
+                Math.min(
+                    brightness,
+                    1.2
+                )
+            );
+
+
+        /*
+            Draw dot.
+        */
+
+        ctx.beginPath();
+
+
+        ctx.fillStyle =
+            color;
+
+
+        ctx.shadowColor =
+            color;
+
+
+        ctx.shadowBlur =
+            voiceLevel > 0.08
+                ? 3
+                : 1.5;
+
+
+        ctx.arc(
+            screenX,
+            screenY,
+            size,
+            0,
+            Math.PI * 2
+        );
+
+
+        ctx.fill();
     }
+
+
+    ctx.shadowBlur = 0;
+
+
+    requestAnimationFrame(
+        draw
+    );
+}
+
+
+requestAnimationFrame(
+    draw
 );
+
+
+/* ==========================================
+   VOICE POWER
+========================================== */
+
+window.setSpeechPower =
+    function (power) {
+
+        targetVoiceLevel =
+            Math.max(
+                0,
+                Math.min(
+                    1,
+                    power
+                )
+            );
+    };

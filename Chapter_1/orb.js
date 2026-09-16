@@ -28,8 +28,36 @@ const particles = [];
 let rotation = 10;
 
 let voiceLevel = 0;
-
 let targetVoiceLevel = 0;
+
+/*
+    ENVELOPE FOLLOWER
+
+    Real audio meters use a fast "attack"
+    (jump up quickly when a sound starts)
+    and a slower "release" (ease back down)
+    so the visual tracks actual loudness
+    instead of lagging or overshooting it.
+*/
+
+const ATTACK = 0.45;
+const RELEASE = 0.12;
+
+/*
+    BOUNCE (spring) STATE
+
+    A lightly-damped spring on top of the
+    envelope gives a bit of natural bounce,
+    but damping is high enough that it
+    settles onto the real level quickly
+    instead of wobbling past it.
+*/
+
+let bounceScale = 1;
+let bounceVelocity = 0;
+
+const SPRING_STIFFNESS = 0.05;
+const SPRING_DAMPING = 0.35;
 
 
 /* ==========================================
@@ -76,14 +104,6 @@ function resize() {
         H / 2;
 
 
-    /*
-        SMALLER ORB
-
-        Previously the orb was very large.
-        Now it occupies around 55%
-        of the orb area.
-    */
-
     radius =
         Math.min(W, H) * 0.275;
 }
@@ -114,14 +134,6 @@ for (
 
     const phi =
         Math.PI * v;
-
-
-    const sinPhi =
-        Math.sin(phi);
-
-
-    const cosPhi =
-        Math.cos(phi);
 
 
     for (
@@ -186,17 +198,6 @@ function getColor(
     let r;
     let g;
     let b;
-
-
-    /*
-        YELLOW
-          ↓
-        GREEN
-          ↓
-        CYAN
-          ↓
-        BLUE
-    */
 
 
     if (t < 0.30) {
@@ -296,34 +297,66 @@ function draw(time) {
     );
 
 
-    /* Smooth voice animation */
+    /*
+        Envelope follower: fast attack when
+        the voice gets louder, slower release
+        when it quiets down. This is what
+        makes the bounce feel tied to the
+        actual mic level instead of generic.
+    */
+
+    const rate =
+        targetVoiceLevel > voiceLevel
+            ? ATTACK
+            : RELEASE;
 
     voiceLevel +=
         (
             targetVoiceLevel -
             voiceLevel
-        ) * 0.10;
+        ) * rate;
 
 
-    /* Slow rotation */
+    /* Slow rotation, a bit livelier when talking */
 
     rotation +=
         0.0022 +
-        voiceLevel * 0.002;
+        voiceLevel * 0.0035;
 
 
     /*
-        Speech makes the orb
-        slightly larger.
+        SPRING-DRIVEN BOUNCE
+
+        Chases the envelope (not the raw
+        target), so it can't run ahead of
+        the actual measured level. Damping
+        is high enough to settle fast —
+        a touch of natural bounce, not a
+        wobble that drifts from reality.
     */
 
-    const scale =
+    const targetScale =
         1 +
-        voiceLevel * 0.18;
+        voiceLevel * 0.45;
+
+
+    const springForce =
+        (targetScale - bounceScale) *
+        SPRING_STIFFNESS;
+
+
+    bounceVelocity +=
+        springForce;
+
+    bounceVelocity *=
+        (1 - SPRING_DAMPING);
+
+    bounceScale +=
+        bounceVelocity;
 
 
     const currentRadius =
-        radius * scale;
+        radius * bounceScale;
 
 
     /* ======================================
@@ -364,14 +397,17 @@ function draw(time) {
 
 
         /*
-            Very subtle organic movement.
+            Organic movement, scaled by the
+            tracked voice level (not the raw
+            target) so it stays in sync with
+            what's actually being measured.
         */
 
         const movement =
             Math.sin(
                 time * 0.0014 +
                 p.offset
-            ) * 0.004;
+            ) * (0.004 + voiceLevel * 0.005);
 
 
         x += movement;
@@ -380,19 +416,11 @@ function draw(time) {
             movement * 0.4;
 
 
-        /*
-            Hide the back side.
-        */
-
         if (z < -0.08) {
 
             continue;
         }
 
-
-        /*
-            Depth.
-        */
 
         const depth =
             (z + 1) / 2;
@@ -417,10 +445,6 @@ function draw(time) {
             perspective;
 
 
-        /*
-            Edge brightness.
-        */
-
         const distance =
             Math.sqrt(
                 x * x +
@@ -438,10 +462,6 @@ function draw(time) {
             );
 
 
-        /*
-            Keep the center dark.
-        */
-
         const centerBrightness =
             0.30 +
             edge * 0.70;
@@ -458,20 +478,16 @@ function draw(time) {
             depthBrightness *
             (
                 1 +
-                voiceLevel * 0.5
+                voiceLevel * 0.6
             );
 
-
-        /*
-            Small dots.
-        */
 
         const size =
             p.size *
             perspective *
             (
                 1 +
-                voiceLevel * 0.35
+                voiceLevel * 0.5
             );
 
 
@@ -480,14 +496,10 @@ function draw(time) {
                 x,
                 Math.min(
                     brightness,
-                    1.2
+                    1.25
                 )
             );
 
-
-        /*
-            Draw dot.
-        */
 
         ctx.beginPath();
 
@@ -502,7 +514,7 @@ function draw(time) {
 
         ctx.shadowBlur =
             voiceLevel > 0.08
-                ? 3
+                ? 4
                 : 1.5;
 
 
