@@ -1,36 +1,55 @@
-# 🌐 HTML Project Repository
+# 🌐 HTML Learning & Projects Repository
 
 Welcome to my HTML repository! 🚀
-This repository contains my practice projects, experiments, and basic implementations using **HTML**.
 
----
+This repository contains my journey of learning **HTML and frontend web development**, including practice chapters, mini-projects, and website experiments.
 
 ## 📌 About This Repository
 
-This repo is created to:
+The main goals of this repository are to:
 
-* Practice core concepts of HTML 🧠
-* Build basic web pages 🌍
-* Improve frontend development skills 💻
+- Learn and practice HTML5 fundamentals.
+- Build interactive and responsive web pages.
+- Improve frontend development skills.
+- Create and maintain practical web development projects.
 
----
+## 📂 Repository Structure
 
-## 📂 Project Structure
-
-```
+```text
 HTML/
-│
-├── project/
-│   └── index.html
-│
+├── CALCULATOR/
+├── Chapter_1/
+├── Chapter_2/
+├── Chapter_3/
+├── Chapter_4/
+├── NETFLIX_CLONE/
+├── PROJECTS/
+├── SEO/
 └── README.md
 ```
 
----
+## 🚀 Projects
 
-## 🚀 Getting Started
+| Folder | Description |
+|---|---|
+| `CALCULATOR` | Calculator project |
+| `Chapter_1` | HTML learning and practice |
+| `Chapter_2` | HTML learning and practice |
+| `Chapter_3` | HTML learning and practice |
+| `Chapter_4` | HTML learning and practice |
+| `NETFLIX_CLONE` | Netflix-inspired website project |
+| `PROJECTS` | Collection of web development projects |
+| `SEO` | Search engine optimization practice |
 
-To run this project locally:
+## 🛠️ Technologies Used
+
+- HTML5
+- CSS3
+- JavaScript
+
+## 💻 Getting Started
+
+To explore this repository locally:
 
 1. Clone the repository:
 
@@ -38,60 +57,47 @@ To run this project locally:
    git clone https://github.com/sabujghorai/HTML.git
    ```
 
-2. Navigate into the folder:
+2. Navigate to the project directory:
 
    ```bash
    cd HTML
    ```
 
-3. Open the HTML file:
+3. Open the folder in VS Code:
 
-   * Double click `index.html`
-   * OR open with browser
+   ```bash
+   code .
+   ```
 
----
+4. Open any `.html` file in your browser to view the webpage.
 
-## 🛠️ Technologies Used
+## 📖 What I'm Learning
 
-* HTML5
+- HTML elements and attributes
+- Semantic HTML
+- Forms and input elements
+- CSS styling and layouts
+- JavaScript fundamentals
+- Building real-world web projects
 
----
+## 🎯 Future Goals
 
-## 📖 What I’m Learning
+- Improve existing projects.
+- Build more interactive websites.
+- Learn advanced CSS and JavaScript.
+- Explore responsive web design.
+- Contribute to open-source projects.
 
-* Basic HTML structure
-* Tags and elements
-* Forms and inputs
-* Semantic HTML
+## 🤝 Contributions
 
----
+This is a personal learning repository. Suggestions, feedback, and improvements are welcome!
 
-## 🎯 Future Plans
+## 📬 Connect With Me
 
-* Add CSS for styling 🎨
-* Add JavaScript for interactivity ⚡
-* Build mini projects 🧩
-
----
-
-## 🤝 Contributing
-
-This is a personal learning repository, but suggestions are welcome! 😊
-
----
-
-## 📬 Contact
-
-Feel free to connect with me:
-
-* GitHub: https://github.com/sabujghorai
+- GitHub: [@sabujghorai](https://github.com/sabujghorai)
 
 ---
 
-## ⭐ Support
+⭐ If you find this repository useful, feel free to star it.
 
-If you like this repo, give it a ⭐ and follow for more updates!
-
----
-
-💡 *Learning never stops — keep building!* 🚀
+*Learning never stops — keep building!* 🚀
