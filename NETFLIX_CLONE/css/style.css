@@ -1,3 +1,4 @@
+/* Reset */
 * {
     margin: 0;
     padding: 0;
@@ -10,80 +11,108 @@ body {
     color: white;
 }
 
+/* Main Hero Section */
 header {
     min-height: 100vh;
+    min-height: 100svh;
     background:
-        linear-gradient(rgba(0,0,0,.7), rgba(0,0,0,.8)),
+        linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)),
         url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1920");
     background-size: cover;
     background-position: center;
+    padding: 25px 8%;
 }
 
+/* Navigation */
 ul {
     list-style: none;
-    padding: 25px 10%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
-img {
+ul img {
     width: 150px;
+    max-width: 100%;
 }
 
-div {
-    float: right;
+ul div {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
+/* Language Selector */
 select {
-    background: transparent;
+    background: rgba(0, 0, 0, 0.6);
     color: white;
     border: 1px solid #666;
     border-radius: 4px;
     padding: 8px 15px;
-    margin-right: 10px;
 }
 
 select option {
     color: black;
 }
 
+/* Links */
 a {
     text-decoration: none;
 }
 
-div a {
+ul div a {
     background: #e50914;
     color: white;
     padding: 10px 18px;
     border-radius: 4px;
     font-weight: bold;
+    white-space: nowrap;
 }
 
-div a:hover {
+ul div a:hover {
     background: #c11119;
 }
 
+/* Main Heading */
 h1 {
     text-align: center;
-    font-size: 3.8rem;
-    max-width: 700px;
-    margin: 180px auto 20px;
+    font-size: clamp(2rem, 5vw, 3.8rem);
+    max-width: 800px;
+    margin: 160px auto 20px;
+    line-height: 1.15;
 }
 
+/* Subheadings */
 h3,
 h4 {
     text-align: center;
-    margin-top: 10px;
+    margin-top: 15px;
+    line-height: 1.5;
 }
 
+h3 {
+    font-size: 1.4rem;
+}
+
+h4 {
+    font-size: 1.1rem;
+    font-weight: normal;
+}
+
+/* Email Input */
 input[type="email"] {
     display: block;
-    width: 400px;
-    max-width: 90%;
+    width: 100%;
+    max-width: 450px;
     margin: 30px auto 20px;
-    padding: 15px;
+    padding: 16px;
     border-radius: 4px;
     border: 1px solid #666;
     background: rgba(22, 22, 22, 0.8);
     color: white;
+    font-size: 1rem;
 }
 
 input::placeholder {
@@ -107,15 +136,82 @@ input::placeholder {
     background: #c11119;
 }
 
+/* Tablet */
 @media (max-width: 768px) {
-    div {
-        float: none;
-        text-align: center;
-        margin-top: 15px;
+    header {
+        padding: 25px 5%;
+    }
+
+    ul img {
+        width: 120px;
     }
 
     h1 {
-        font-size: 2.2rem;
         margin-top: 120px;
+        font-size: clamp(2rem, 6vw, 3rem);
+    }
+
+    h3 {
+        font-size: 1.2rem;
+    }
+
+    h4 {
+        font-size: 1rem;
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    header {
+        padding: 20px 5%;
+    }
+
+    ul {
+        gap: 12px;
+    }
+
+    ul img {
+        width: 95px;
+    }
+
+    ul div {
+        gap: 8px;
+    }
+
+    select {
+        padding: 7px 8px;
+        font-size: 0.85rem;
+    }
+
+    ul div a {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+
+    h1 {
+        margin-top: 100px;
+        font-size: 2rem;
+        line-height: 1.2;
+    }
+
+    h3 {
+        font-size: 1.05rem;
+    }
+
+    h4 {
+        font-size: 0.9rem;
+    }
+
+    input[type="email"] {
+        max-width: 100%;
+        padding: 14px;
+    }
+
+    #email + a {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+        font-size: 1rem;
+        padding: 14px;
     }
 }
